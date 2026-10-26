@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Roke Graduate Challenge - Level 2: Physical Security</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- Base Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Game Header -->
+  <header class="game-header">
+    <button class="burger-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#gameSidebar" aria-controls="gameSidebar" aria-label="Toggle navigation menu" id="burgerMenuBtn">
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+    </button>
+    <div class="header-brand">ROKE // LEVEL 02</div>
+    <div class="header-badge" id="header-player-name">GRADUATE</div>
+  </header>
+
+  <!-- Sidebar (Levels & Progress) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="gameSidebar" aria-labelledby="gameSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="gameSidebarLabel">PROGRAMME LEVELS</h5>
+      <button type="button" class="btn-close-flat" data-bs-dismiss="offcanvas" aria-label="Close">[X]</button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Dynamically generated level list -->
+      <nav id="sidebar-levels" class="level-list" aria-label="Level navigation">
+        <!-- Injected via js/game.js -->
+      </nav>
+
+      <!-- Dynamically updated progress indicator -->
+      <div id="sidebar-progress" class="mt-4">
+        <!-- Injected via js/game.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Initial Briefing Modal (Active on load, greys out background) -->
+  <div id="introModal" class="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="introTitle">LEVEL 02 // OBJECTIVE</span>
+        <span>PHYSICAL SECURITY</span>
+      </div>
+      <div class="game-card-body">
+        <p class="mb-0">Physical security controls who can enter secure areas. A secure staff-only room requires an authorized PIN code to open. Take a close look at the keypad next to the door to see if you can figure out the combination.</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnIntroStart" class="btn-game">Let's go</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keypad Close-Up & Code Entry Modal -->
+  <div id="keypadModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="keypadModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="keypadModalTitle">ACCESS CONTROL // KEYPAD</span>
+        <button type="button" id="btnCloseKeypadX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="keypad-stage-container">
+          <div class="keypad-stage" id="keypadStage">
+            <img src="media/keypad.jpg" id="keypadImg" class="keypad-img" alt="Worn Access Keypad" draggable="false">
+
+            <!-- Green Segment Display Overlapping the Keypad Black Screen -->
+            <div id="segmentDisplay" class="keypad-segment-display" aria-live="polite">_ _ _</div>
+
+            <!-- 12 Invisible Button Hitboxes with Calibrated Coordinates -->
+            <div id="btnKey-1" class="keypad-btn-hitbox" data-key="1" style="left: 26.50%; top: 33.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="1" tabindex="0"></div>
+            <div id="btnKey-2" class="keypad-btn-hitbox" data-key="2" style="left: 43.30%; top: 33.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="2" tabindex="0"></div>
+            <div id="btnKey-3" class="keypad-btn-hitbox" data-key="3" style="left: 60.10%; top: 33.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="3" tabindex="0"></div>
+            
+            <div id="btnKey-4" class="keypad-btn-hitbox" data-key="4" style="left: 26.50%; top: 45.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="4" tabindex="0"></div>
+            <div id="btnKey-5" class="keypad-btn-hitbox" data-key="5" style="left: 43.30%; top: 45.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="5" tabindex="0"></div>
+            <div id="btnKey-6" class="keypad-btn-hitbox" data-key="6" style="left: 60.10%; top: 45.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="6" tabindex="0"></div>
+            
+            <div id="btnKey-7" class="keypad-btn-hitbox" data-key="7" style="left: 26.50%; top: 57.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="7" tabindex="0"></div>
+            <div id="btnKey-8" class="keypad-btn-hitbox" data-key="8" style="left: 43.30%; top: 57.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="8" tabindex="0"></div>
+            <div id="btnKey-9" class="keypad-btn-hitbox" data-key="9" style="left: 60.10%; top: 57.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="9" tabindex="0"></div>
+            
+            <div id="btnKey-star" class="keypad-btn-hitbox" data-key="*" style="left: 26.50%; top: 69.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="Clear" tabindex="0"></div>
+            <div id="btnKey-0" class="keypad-btn-hitbox" data-key="0" style="left: 43.30%; top: 69.50%; width: 13.50%; height: 9.50%;" role="button" aria-label="0" tabindex="0"></div>
+            <div id="btnKey-hash" class="keypad-btn-hitbox" data-key="#" style="left: 60.10%; top: 69.00%; width: 13.50%; height: 9.50%;" role="button" aria-label="Enter" tabindex="0"></div>
+          </div>
+        </div>
+
+        <!-- Physical Security Educational Note -->
+        <div class="mt-3 p-3" style="background-color: var(--bg-surface-alt); border: 2px solid var(--border-color); font-size: 0.88rem; line-height: 1.45;">
+          <div style="font-weight: 700; color: var(--color-primary); font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px;">Physical Security Basics</div>
+          <p class="mb-0 text-muted">Physical security protects buildings, computers, and staff from unauthorized physical access. Strong passwords and software firewalls cannot stop an intruder who can simply walk into an office, plug in a rogue USB, or access servers in a data centre. Secure doors, keypads, and barriers ensure only trusted personnel reach sensitive equipment.</p>
+        </div>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnDismissKeypad" class="btn-game">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Full-Screen Door Stage (Mobile First: fills height, centered, sides cropped) -->
+  <main class="door-viewer-wrapper" id="doorViewer">
+    <div class="door-stage" id="doorStage">
+      <!-- Full-resolution Door photograph -->
+      <img src="media/door.jpg" id="doorImg" class="door-img" alt="Secure Door" draggable="false">
+
+      <!-- Invisible Interactable Div placed over number pad -->
+      <div id="doorKeypadHitbox" class="door-keypad-hitbox" style="left: 32.01%; top: 49.56%; width: 6.80%; height: 12.10%;" role="button" tabindex="0" aria-label="Access Number Pad"></div>
+    </div>
+  </main>
+
+  <!-- Security Operations Room Scene (Revealed after entering PIN 714) -->
+  <section class="security-room-wrapper d-none" id="secRoomViewer" aria-label="Security Operations Room">
+    <div class="security-room-stage" id="secRoomStage">
+      <!-- Full-resolution square-on Security Room Photograph -->
+      <img src="media/security_room.jpg" id="secRoomImg" class="security-room-img" alt="Security Control Room with Monitors and Lanyard" draggable="false">
+
+      <!-- 4 Overlay CCTV Monitor Screens with Glowing Backdrops -->
+      <!-- Monitor 1: Top-Left (Turnstiles) -->
+      <div class="monitor-screen-overlay monitor-tl" id="monitorTL" role="button" tabindex="0" aria-label="Inspect Camera 01: Front Access Turnstiles">
+        <div class="monitor-status-badge" id="badgeTL">CAM 01 // INSPECT</div>
+        <div class="monitor-glow-backdrop"></div>
+        <img src="media/cctv_turnstiles.jpg" class="monitor-cctv-feed" alt="CAM 01 // Front Access Turnstiles" draggable="false">
+      </div>
+
+      <!-- Monitor 2: Top-Right (Propped Door) -->
+      <div class="monitor-screen-overlay monitor-tr" id="monitorTR" role="button" tabindex="0" aria-label="Inspect Camera 02: Access Corridor Propped Door">
+        <div class="monitor-status-badge" id="badgeTR">CAM 02 // INSPECT</div>
+        <div class="monitor-glow-backdrop"></div>
+        <img src="media/cctv_propped_door.jpg" class="monitor-cctv-feed" alt="CAM 02 // Access Corridor Propped Door" draggable="false">
+      </div>
+
+      <!-- Monitor 3: Bottom-Left (Reception) -->
+      <div class="monitor-screen-overlay monitor-bl" id="monitorBL" role="button" tabindex="0" aria-label="Inspect Camera 03: Main Reception Checkpoint">
+        <div class="monitor-status-badge" id="badgeBL">CAM 03 // INSPECT</div>
+        <div class="monitor-glow-backdrop"></div>
+        <img src="media/cctv_reception.jpg" class="monitor-cctv-feed" alt="CAM 03 // Main Reception" draggable="false">
+      </div>
+
+      <!-- Monitor 4: Bottom-Right (Perimeter Fence) -->
+      <div class="monitor-screen-overlay monitor-br" id="monitorBR" role="button" tabindex="0" aria-label="Inspect Camera 04: Perimeter Security Fence">
+        <div class="monitor-status-badge" id="badgeBR">CAM 04 // INSPECT</div>
+        <div class="monitor-glow-backdrop"></div>
+        <img src="media/cctv_perimeter.jpg" class="monitor-cctv-feed" alt="CAM 04 // Perimeter Security Fence" draggable="false">
+      </div>
+
+      <!-- Lanyard ID Hitbox with Red Highlighting Box -->
+      <div id="lanyardHitbox" class="lanyard-hitbox" role="button" tabindex="0" aria-label="Inspect Staff ID Lanyard on desk">
+        <span class="lanyard-hitbox-label" id="lanyardHitboxLabel">STAFF ID BADGE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CCTV Feed Inspection & Assessment Modal -->
+  <div id="cctvModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="cctvModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="cctvModalTitle">SURVEILLANCE FEED // CAM 01</span>
+        <button type="button" id="btnCloseCctvX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <!-- Close-up of CCTV Camera Feed -->
+        <img id="cctvModalImg" src="media/cctv_turnstiles.jpg" class="cctv-modal-preview" alt="CCTV Feed Close-Up" draggable="false">
+
+        <!-- Question Prompt Box -->
+        <div class="quiz-question-block mb-3">
+          <div class="quiz-question-title mb-2" id="cctvQuestionPrompt">Which physical access control can you see?</div>
+          <div class="quiz-options-list" id="cctvOptionsList">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="cctvFeedback" class="quiz-feedback d-none" role="alert"></div>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnSubmitCctv" class="btn-game">Submit Answer</button>
+        <button type="button" id="btnCloseCctv" class="btn-game btn-game-secondary d-none">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff ID Lanyard Inspection Modal -->
+  <div id="lanyardModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="lanyardModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="lanyardModalTitle">STAFF ID BADGE // PHYSICAL ACCESS SECURITY</span>
+        <button type="button" id="btnCloseLanyardX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="mb-3">
+          <div style="font-weight: 700; color: var(--color-primary); font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px;">
+            Staff Identification & Pass Credentials
+          </div>
+          <p class="mb-0 text-muted" style="font-size: 0.92rem; line-height: 1.5;">
+            ID lanyards and smartcards are standard equipment in modern facilities. How employees handle their badges outside and inside work has a direct impact on corporate and physical security.
+          </p>
+        </div>
+
+        <!-- Risks of Wearing Lanyards Outside of Work -->
+        <div class="p-3 mb-3" style="background-color: #fef2f2; border: 2px solid #ef4444; font-size: 0.88rem; line-height: 1.5;">
+          <div style="font-weight: 800; color: #991b1b; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.04em; margin-bottom: 6px;">
+            Risks of Wearing Lanyards Outside of Work
+          </div>
+          <ul class="mb-0 ps-3 text-secondary" style="display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Target for Social Engineering:</strong> Displaying your full name, photo, and company branding in public (trains, coffee shops, pavements) gives attackers the details needed to impersonate you, craft spear-phishing emails, or run phone pretexting scams against your colleagues.</li>
+            <li><strong>Visual Forgery & Card Cloning:</strong> Modern smartphone cameras can capture high-resolution photos of ID passes, barcodes, and badge numbers from several metres away to manufacture fake passes. Contactless RFID cards can also be wirelessly sniffed with portable readers if carried openly without a shielded sleeve.</li>
+            <li><strong>Facility & Clearance Reconnaissance:</strong> Wearing branded badges signals that you work for a defence or tech firm, marking you out as a high-value target for physical tailgating, theft, or pattern-of-life observation.</li>
+          </ul>
+        </div>
+
+        <!-- Benefits of Lanyards Inside Secure Facilities -->
+        <div class="p-3" style="background-color: #f0fdf4; border: 2px solid #059669; font-size: 0.88rem; line-height: 1.5;">
+          <div style="font-weight: 800; color: #065f46; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.04em; margin-bottom: 6px;">
+            Benefits of Lanyards Inside Secure Facilities
+          </div>
+          <ul class="mb-0 ps-3 text-secondary" style="display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Instant Visual Verification:</strong> Allows security guards and staff to immediately identify authorised colleagues versus unescorted visitors, contractors, or unauthorized intruders.</li>
+            <li><strong>Empowering a "Challenge Culture":</strong> Promotes a safe, standard procedure where staff feel empowered to politely challenge anyone not displaying a valid badge in restricted areas ("Can I help you find where you need to go?").</li>
+            <li><strong>Access Zone Tiering:</strong> Color-coded lanyards and badge holders provide immediate recognition of clearance levels (e.g., standard employee, escorted contractor, or high-security data centre access).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnDismissLanyard" class="btn-game">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standardised Level 2 Completion Modal -->
+  <div id="completionModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="completionModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="completionModalTitle">LEVEL 02 // CHALLENGE COMPLETE</span>
+        <button type="button" id="btnCloseCompletionX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="completion-container">
+          <div class="completion-trophy" aria-hidden="true">🏆</div>
+          <div class="completion-badge">WELL DONE // LEVEL 02 COMPLETED</div>
+          <h3 class="title-large">LEVEL 2 COMPLETE</h3>
+          <p class="mb-0">You've identified all 4 physical access controls and learned how proper badge handling safeguards secure facilities.</p>
+        </div>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnContinueLevel3" class="btn-game">Continue to Level 3</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-Screen Blackout Overlay (Fades to black upon entering correct PIN 714, then fades into Security Room) -->
+  <div id="blackoutOverlay" class="blackout-screen" aria-hidden="true"></div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core Game Engine -->
+  <script src="js/game.js"></script>
+
+  <!-- Level 2 Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // 1. Initial Briefing Modal
+      const introModal = document.getElementById("introModal");
+      const btnIntroStart = document.getElementById("btnIntroStart");
+      if (btnIntroStart && introModal) {
+        btnIntroStart.addEventListener("click", function() {
+          introModal.classList.add("d-none");
+        });
+      }
+
+      // Check if door was already unlocked in this session (e.g. on page refresh)
+      try {
+        if (sessionStorage.getItem("level2_door_unlocked") === "true") {
+          if (doorViewer) doorViewer.classList.add("d-none");
+          if (introModal) introModal.classList.add("d-none");
+          if (secRoomViewer) {
+            secRoomViewer.classList.remove("d-none");
+            setTimeout(centerSecRoomStage, 50);
+          }
+        }
+      } catch (e) {}
+
+      // 2. Mobile-First Center Positioning & Panning
+      const doorViewer = document.getElementById("doorViewer");
+      const doorStage = document.getElementById("doorStage");
+      const secRoomViewer = document.getElementById("secRoomViewer");
+      const secRoomStage = document.getElementById("secRoomStage");
+
+      function centerDoorStage() {
+        if (doorViewer && doorStage && doorStage.offsetWidth > doorViewer.clientWidth) {
+          doorViewer.scrollLeft = (doorStage.offsetWidth - doorViewer.clientWidth) / 2;
+        }
+      }
+
+      function centerSecRoomStage() {
+        if (secRoomViewer && secRoomStage && secRoomStage.offsetWidth > secRoomViewer.clientWidth) {
+          secRoomViewer.scrollLeft = (secRoomStage.offsetWidth - secRoomViewer.clientWidth) / 2;
+        }
+      }
+
+      window.addEventListener("load", function() {
+        centerDoorStage();
+        centerSecRoomStage();
+      });
+
+      window.addEventListener("resize", function() {
+        centerDoorStage();
+        centerSecRoomStage();
+      });
+
+      centerDoorStage();
+
+      // Mouse drag panning support on desktop/mouse devices for door
+      let isPanning = false;
+      let panStartX = 0;
+      let panStartScroll = 0;
+
+      doorViewer.addEventListener("mousedown", function(e) {
+        if (e.target.closest("#doorKeypadHitbox")) return;
+        isPanning = true;
+        panStartX = e.clientX;
+        panStartScroll = doorViewer.scrollLeft;
+        doorViewer.style.cursor = "grabbing";
+      });
+
+      // Mouse drag panning support for security room
+      let isSecPanning = false;
+      let secPanStartX = 0;
+      let secPanStartScroll = 0;
+
+      if (secRoomViewer) {
+        secRoomViewer.addEventListener("mousedown", function(e) {
+          isSecPanning = true;
+          secPanStartX = e.clientX;
+          secPanStartScroll = secRoomViewer.scrollLeft;
+          secRoomViewer.style.cursor = "grabbing";
+        });
+      }
+
+      window.addEventListener("mousemove", function(e) {
+        if (isPanning) {
+          const dx = e.clientX - panStartX;
+          doorViewer.scrollLeft = panStartScroll - dx;
+        }
+        if (isSecPanning && secRoomViewer) {
+          const dx = e.clientX - secPanStartX;
+          secRoomViewer.scrollLeft = secPanStartScroll - dx;
+        }
+      });
+
+      window.addEventListener("mouseup", function() {
+        if (isPanning) {
+          isPanning = false;
+          doorViewer.style.cursor = "default";
+        }
+        if (isSecPanning && secRoomViewer) {
+          isSecPanning = false;
+          secRoomViewer.style.cursor = "default";
+        }
+      });
+
+      // 3. Invisible Door Keypad Hitbox Trigger
+      const doorKeypadHitbox = document.getElementById("doorKeypadHitbox");
+      const keypadModal = document.getElementById("keypadModal");
+      const btnCloseKeypadX = document.getElementById("btnCloseKeypadX");
+      const btnDismissKeypad = document.getElementById("btnDismissKeypad");
+
+      function openKeypadModal() {
+        if (keypadModal) {
+          keypadModal.classList.remove("d-none");
+        }
+      }
+
+      function closeKeypadModal() {
+        if (keypadModal) {
+          keypadModal.classList.add("d-none");
+        }
+      }
+
+      if (doorKeypadHitbox) {
+        doorKeypadHitbox.addEventListener("click", openKeypadModal);
+        doorKeypadHitbox.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openKeypadModal();
+          }
+        });
+      }
+
+      if (btnCloseKeypadX) btnCloseKeypadX.addEventListener("click", closeKeypadModal);
+      if (btnDismissKeypad) btnDismissKeypad.addEventListener("click", closeKeypadModal);
+
+      // 4. Keypad PIN Logic & Green Segment Display
+      const segmentDisplay = document.getElementById("segmentDisplay");
+      const blackoutOverlay = document.getElementById("blackoutOverlay");
+      let currentPin = "";
+      let isLocked = false;
+      const TARGET_PIN = "714";
+
+      // Subtle Web Audio Click Sound
+      function playTone(freq, duration, type = "sine") {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      function playKeyClick() {
+        playTone(1100, 0.04);
+      }
+
+      function playSuccessChime() {
+        playTone(880, 0.1);
+        setTimeout(() => playTone(1320, 0.18), 110);
+      }
+
+      function playErrorBuzz() {
+        playTone(220, 0.2, "square");
+      }
+
+      function updateSegmentDisplay(overrideText) {
+        if (!segmentDisplay) return;
+        if (overrideText !== undefined) {
+          segmentDisplay.textContent = overrideText;
+          return;
+        }
+
+        if (currentPin.length === 0) {
+          segmentDisplay.textContent = "_ _ _";
+        } else if (currentPin.length === 1) {
+          segmentDisplay.textContent = currentPin[0] + " _ _";
+        } else if (currentPin.length === 2) {
+          segmentDisplay.textContent = currentPin[0] + " " + currentPin[1] + " _";
+        } else {
+          segmentDisplay.textContent = currentPin[0] + " " + currentPin[1] + " " + currentPin[2];
+        }
+      }
+
+      function checkCode() {
+        if (currentPin === TARGET_PIN) {
+          isLocked = true;
+          playSuccessChime();
+          try { sessionStorage.setItem("level2_door_unlocked", "true"); } catch (e) {}
+          // Keep successful digits visible briefly, then close modal and fade to black
+          setTimeout(function() {
+            closeKeypadModal();
+            if (blackoutOverlay) {
+              blackoutOverlay.style.display = "block";
+              // Force reflow
+              void blackoutOverlay.offsetWidth;
+              blackoutOverlay.classList.add("active");
+
+              // After 1.5s (when fully black), switch scene to Security Room and fade back in
+              setTimeout(function() {
+                if (doorViewer) doorViewer.classList.add("d-none");
+                if (secRoomViewer) {
+                  secRoomViewer.classList.remove("d-none");
+                  centerSecRoomStage();
+                }
+
+                // Wait 250ms behind black veil, then fade from black to reveal room
+                setTimeout(function() {
+                  blackoutOverlay.classList.remove("active");
+                  // Once fade from black completes (1.5s), remove overlay from layout
+                  setTimeout(function() {
+                    blackoutOverlay.style.display = "none";
+                  }, 1500);
+                }, 250);
+              }, 1500);
+            }
+          }, 450);
+        } else {
+          isLocked = true;
+          playErrorBuzz();
+          updateSegmentDisplay("E R R");
+          segmentDisplay.style.color = "#ef4444";
+          setTimeout(function() {
+            currentPin = "";
+            segmentDisplay.style.color = "#22c55e";
+            updateSegmentDisplay();
+            isLocked = false;
+          }, 650);
+        }
+      }
+
+      // Handle Keypad Button Press
+      function handleKeyPress(key) {
+        if (isLocked) return;
+
+        playKeyClick();
+
+        if (key === "*") {
+          currentPin = "";
+          updateSegmentDisplay();
+          return;
+        }
+
+        if (key === "#") {
+          if (currentPin.length > 0) {
+            checkCode();
+          }
+          return;
+        }
+
+        // Numeric key
+        if (currentPin.length < 3) {
+          currentPin += key;
+          updateSegmentDisplay();
+
+          // Auto-check once 3 digits are entered
+          if (currentPin.length === 3) {
+            checkCode();
+          }
+        }
+      }
+
+      // Attach key click handlers
+      document.querySelectorAll(".keypad-btn-hitbox").forEach(elem => {
+        elem.addEventListener("click", function(e) {
+          const key = elem.getAttribute("data-key");
+          handleKeyPress(key);
+          e.stopPropagation();
+        });
+      });
+
+      // 5. CCTV Surveillance Data & Assessment Logic
+      const CCTV_DATA = {
+        tl: {
+          id: "tl",
+          camCode: "CAM 01 // FRONT ENTRANCE",
+          imgSrc: "media/cctv_turnstiles.jpg",
+          imgAlt: "CAM 01 // Front Access Turnstiles Feed",
+          options: [
+            "Optical speed gates / turnstiles",
+            "Biometric retina scanner",
+            "Vehicle tire spikes"
+          ],
+          correctIndex: 0,
+          explanation: "Optical turnstiles and speed gates enforce single-person entry (anti-tailgating) and verify authorized badges before opening."
+        },
+        tr: {
+          id: "tr",
+          camCode: "CAM 02 // ACCESS CORRIDOR",
+          imgSrc: "media/cctv_propped_door.jpg",
+          imgAlt: "CAM 02 // Access Corridor Propped Door Feed",
+          options: [
+            "Automated roller shutter",
+            "Electronic access-controlled door (propped open)",
+            "Manual deadbolt cylinder"
+          ],
+          correctIndex: 1,
+          explanation: "This electronic card-reader door has been propped open with a box, completely bypassing the physical access control mechanism."
+        },
+        bl: {
+          id: "bl",
+          camCode: "CAM 03 // MAIN RECEPTION",
+          imgSrc: "media/cctv_reception.jpg",
+          imgAlt: "CAM 03 // Main Reception Checkpoint Feed",
+          options: [
+            "Manned security desk / reception checkpoint",
+            "Underfloor pressure mats",
+            "Infrared perimeter tripwire"
+          ],
+          correctIndex: 0,
+          explanation: "A manned security reception checkpoint provides human verification of visitors, identity checks, and physical oversight of access."
+        },
+        br: {
+          id: "br",
+          camCode: "CAM 04 // PERIMETER BOUNDARY",
+          imgSrc: "media/cctv_perimeter.jpg",
+          imgAlt: "CAM 04 // Perimeter Security Fence Feed",
+          options: [
+            "Subterranean seismic motion sensor",
+            "Anti-ram hydraulic road bollard",
+            "High-security perimeter fencing"
+          ],
+          correctIndex: 2,
+          explanation: "High-security perimeter fencing acts as the primary physical perimeter barrier, defining property borders and deterring unauthorized intrusion."
+        }
+      };
+
+      const solvedCctv = {
+        tl: false,
+        tr: false,
+        bl: false,
+        br: false
+      };
+      let lanyardReviewed = false;
+      let currentCamKey = null;
+
+      const cctvModal = document.getElementById("cctvModal");
+      const cctvModalTitle = document.getElementById("cctvModalTitle");
+      const cctvModalImg = document.getElementById("cctvModalImg");
+      const cctvOptionsList = document.getElementById("cctvOptionsList");
+      const cctvFeedback = document.getElementById("cctvFeedback");
+      const btnSubmitCctv = document.getElementById("btnSubmitCctv");
+      const btnCloseCctv = document.getElementById("btnCloseCctv");
+      const btnCloseCctvX = document.getElementById("btnCloseCctvX");
+
+      const lanyardHitbox = document.getElementById("lanyardHitbox");
+      const lanyardHitboxLabel = document.getElementById("lanyardHitboxLabel");
+      const lanyardModal = document.getElementById("lanyardModal");
+      const btnDismissLanyard = document.getElementById("btnDismissLanyard");
+      const btnCloseLanyardX = document.getElementById("btnCloseLanyardX");
+
+      const completionModal = document.getElementById("completionModal");
+      const btnCloseCompletionX = document.getElementById("btnCloseCompletionX");
+      const btnContinueLevel3 = document.getElementById("btnContinueLevel3");
+
+      function openCctvModal(camKey) {
+        currentCamKey = camKey;
+        const data = CCTV_DATA[camKey];
+        if (!data || !cctvModal) return;
+
+        cctvModalTitle.textContent = data.camCode;
+        cctvModalImg.src = data.imgSrc;
+        cctvModalImg.alt = data.imgAlt;
+
+        // Render 3 radio options
+        cctvOptionsList.innerHTML = "";
+        data.options.forEach((optText, idx) => {
+          const label = document.createElement("label");
+          label.className = "quiz-option-label";
+          if (solvedCctv[camKey]) {
+            label.classList.add("disabled");
+            if (idx === data.correctIndex) {
+              label.classList.add("correct");
+            }
+          }
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "cctvChoice";
+          radio.value = idx;
+          radio.className = "quiz-option-input";
+          if (solvedCctv[camKey]) {
+            radio.disabled = true;
+            if (idx === data.correctIndex) {
+              radio.checked = true;
+            }
+          }
+
+          const span = document.createElement("span");
+          span.textContent = optText;
+
+          label.appendChild(radio);
+          label.appendChild(span);
+          cctvOptionsList.appendChild(label);
+        });
+
+        if (solvedCctv[camKey]) {
+          cctvFeedback.textContent = "VERIFIED: " + data.options[data.correctIndex] + ". " + data.explanation;
+          cctvFeedback.className = "quiz-feedback success";
+          btnSubmitCctv.classList.add("d-none");
+          btnCloseCctv.classList.remove("d-none");
+        } else {
+          cctvFeedback.textContent = "";
+          cctvFeedback.className = "quiz-feedback d-none";
+          btnSubmitCctv.classList.remove("d-none");
+          btnSubmitCctv.textContent = "Submit Answer";
+          btnCloseCctv.classList.add("d-none");
+        }
+
+        cctvModal.classList.remove("d-none");
+      }
+
+      function closeCctvModal() {
+        if (cctvModal) cctvModal.classList.add("d-none");
+        checkOverallCompletion();
+      }
+
+      if (btnCloseCctvX) btnCloseCctvX.addEventListener("click", closeCctvModal);
+      if (btnCloseCctv) btnCloseCctv.addEventListener("click", closeCctvModal);
+
+      // Handle CCTV answer submission
+      if (btnSubmitCctv) {
+        btnSubmitCctv.addEventListener("click", function() {
+          if (!currentCamKey) return;
+          const data = CCTV_DATA[currentCamKey];
+          const selected = document.querySelector('input[name="cctvChoice"]:checked');
+
+          if (!selected) {
+            cctvFeedback.textContent = "Please select an option.";
+            cctvFeedback.className = "quiz-feedback";
+            return;
+          }
+
+          const chosenIdx = parseInt(selected.value, 10);
+          if (chosenIdx === data.correctIndex) {
+            solvedCctv[currentCamKey] = true;
+            playSuccessChime();
+
+            cctvFeedback.textContent = "CORRECT: " + data.options[data.correctIndex] + ". " + data.explanation;
+            cctvFeedback.className = "quiz-feedback success";
+
+            // Update badge on monitor in security room
+            const badge = document.getElementById("badge" + currentCamKey.toUpperCase());
+            if (badge) {
+              badge.textContent = currentCamKey.toUpperCase() + " // [VERIFIED]";
+              badge.classList.add("solved");
+            }
+
+            // Update monitor overlay styling
+            const monOverlay = document.getElementById("monitor" + currentCamKey.toUpperCase());
+            if (monOverlay) {
+              monOverlay.classList.add("solved");
+            }
+
+            // Disable radio inputs and highlight correct label
+            document.querySelectorAll('input[name="cctvChoice"]').forEach(r => r.disabled = true);
+            const selectedLabel = selected.closest(".quiz-option-label");
+            if (selectedLabel) selectedLabel.classList.add("correct");
+
+            btnSubmitCctv.classList.add("d-none");
+            btnCloseCctv.classList.remove("d-none");
+
+            checkOverallCompletion();
+          } else {
+            playErrorBuzz();
+            cctvFeedback.textContent = "Incorrect access control. Take a closer look at the surveillance feed and try again.";
+            cctvFeedback.className = "quiz-feedback";
+          }
+        });
+      }
+
+      // Attach monitor click and keydown handlers
+      ["tl", "tr", "bl", "br"].forEach(key => {
+        const elem = document.getElementById("monitor" + key.toUpperCase());
+        if (elem) {
+          elem.addEventListener("click", function() {
+            openCctvModal(key);
+          });
+          elem.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openCctvModal(key);
+            }
+          });
+        }
+      });
+
+      // Lanyard Modal Interaction
+      function openLanyardModal() {
+        if (lanyardModal) {
+          lanyardModal.classList.remove("d-none");
+        }
+      }
+
+      function closeLanyardModal() {
+        if (lanyardModal) {
+          lanyardModal.classList.add("d-none");
+        }
+        lanyardReviewed = true;
+        if (lanyardHitbox) lanyardHitbox.classList.add("reviewed");
+        if (lanyardHitboxLabel) lanyardHitboxLabel.textContent = "STAFF ID BADGE [REVIEWED]";
+        checkOverallCompletion();
+      }
+
+      if (lanyardHitbox) {
+        lanyardHitbox.addEventListener("click", openLanyardModal);
+        lanyardHitbox.addEventListener("keydown", function(e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openLanyardModal();
+          }
+        });
+      }
+
+      if (btnDismissLanyard) btnDismissLanyard.addEventListener("click", closeLanyardModal);
+      if (btnCloseLanyardX) btnCloseLanyardX.addEventListener("click", closeLanyardModal);
+
+      // Check overall Level 2 completion (all 4 cameras solved AND lanyard reviewed)
+      function checkOverallCompletion() {
+        const allCctvSolved = solvedCctv.tl && solvedCctv.tr && solvedCctv.bl && solvedCctv.br;
+        if (allCctvSolved && lanyardReviewed) {
+          const isAnyModalOpen = (!cctvModal.classList.contains("d-none")) || (!lanyardModal.classList.contains("d-none"));
+          if (!isAnyModalOpen) {
+            if (completionModal && completionModal.classList.contains("d-none")) {
+              setTimeout(function() {
+                completionModal.classList.remove("d-none");
+                markLevelCompleted("level2");
+              }, 300);
+            }
+          }
+        }
+      }
+
+      if (btnCloseCompletionX && completionModal) {
+        btnCloseCompletionX.addEventListener("click", function() {
+          completionModal.classList.add("d-none");
+        });
+      }
+
+      if (btnContinueLevel3) {
+        btnContinueLevel3.addEventListener("click", function() {
+          markLevelCompleted("level2");
+          window.location.href = "level3.html";
+        });
+      }
+
+      // Global Escape Key to close any active modal
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+          if (cctvModal && !cctvModal.classList.contains("d-none")) closeCctvModal();
+          if (lanyardModal && !lanyardModal.classList.contains("d-none")) closeLanyardModal();
+          if (keypadModal && !keypadModal.classList.contains("d-none")) closeKeypadModal();
+          if (introModal && !introModal.classList.contains("d-none")) introModal.classList.add("d-none");
+          if (completionModal && !completionModal.classList.contains("d-none")) completionModal.classList.add("d-none");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

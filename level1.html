@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Native browser pinch-to-zoom allowed as requested -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Roke Graduate Challenge - Level 1: Workstation Recon</title>
+
+  <!-- Google Font for handwritten note styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- Base Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Game Header -->
+  <header class="game-header">
+    <button class="burger-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#gameSidebar" aria-controls="gameSidebar" aria-label="Toggle navigation menu" id="burgerMenuBtn">
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+    </button>
+    <div class="header-brand">ROKE // LEVEL 01</div>
+    <div class="header-badge" id="header-player-name">GRADUATE</div>
+  </header>
+
+  <!-- Sidebar (Levels & Progress) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="gameSidebar" aria-labelledby="gameSidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="gameSidebarLabel">PROGRAMME LEVELS</h5>
+      <button type="button" class="btn-close-flat" data-bs-dismiss="offcanvas" aria-label="Close">[X]</button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Dynamically generated level list -->
+      <nav id="sidebar-levels" class="level-list" aria-label="Level navigation">
+        <!-- Injected via js/game.js -->
+      </nav>
+
+      <!-- Dynamically updated progress indicator -->
+      <div id="sidebar-progress" class="mt-4">
+        <!-- Injected via js/game.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Initial Briefing Modal (Active on load, greys out background) -->
+  <div id="introModal" class="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="introTitle">LEVEL 01 // OBJECTIVE</span>
+        <span>PASSWORD SECURITY</span>
+      </div>
+      <div class="game-card-body">
+        <p class="mb-0">Passwords are the most basic level of security you can use to protect digital assets - but people are forgetful, and creatures of habit. Do you think you could identify the password of the engineer using this desk?</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnIntroStart" class="btn-game">Let's go</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Note Close-up Modal (Opens when user clicks sticky note) -->
+  <div id="stickyCloseupModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="stickyModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="stickyModalTitle">WORKSTATION DISCOVERY // NOTE</span>
+        <button type="button" id="btnCloseStickyX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="sticky-closeup-container">
+          <div class="sticky-note-closeup">
+            <span>Password123!</span>
+          </div>
+        </div>
+        <p class="mb-0">Passwords need to be memorable, but not guessable. Avoid common words like "password", your username, date of birth or pet names. Never write down your passwords, especially anywhere obvious. Instead, use a secure password manager</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnDismissSticky" class="btn-game">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newspaper Close-up Modal (Opens when user clicks newspaper) -->
+  <div id="newspaperModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="newspaperModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="newspaperModalTitle">WORKSTATION DISCOVERY // NEWSPAPER</span>
+        <button type="button" id="btnCloseNewspaperX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="newspaper-closeup-card">
+          <div class="newspaper-closeup-masthead">
+            <span>NATIONAL CHRONICLE</span>
+            <span>MORNING EDITION</span>
+          </div>
+          <div class="newspaper-closeup-headline">Major UK government firm breached due to social engineering; thousands of citizens affected</div>
+          <div class="newspaper-closeup-content">
+            <div class="newspaper-closeup-img-placeholder" aria-label="Newspaper image placeholder"></div>
+            <div class="newspaper-closeup-lines" aria-hidden="true">
+              <span class="newspaper-closeup-line"></span>
+              <span class="newspaper-closeup-line"></span>
+              <span class="newspaper-closeup-line"></span>
+              <span class="newspaper-closeup-line"></span>
+            </div>
+          </div>
+        </div>
+        <p class="mb-0">The impact of security breaches doesn't just effect companies, but can affect millions of people, jeopardise their livelihoods and their safety. Good cyber security starts with the basics: strong passwords, limiting what you post online, and always being aware</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnDismissNewspaper" class="btn-game">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Poster Close-up Modal (Opens when user clicks policy poster) -->
+  <div id="posterModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="posterModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="posterModalTitle">WORKSTATION DISCOVERY // POLICY POSTER</span>
+        <button type="button" id="btnClosePosterX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <div class="poster-closeup-card">
+          <div class="poster-closeup-header">Password policy</div>
+          <div class="poster-closeup-body">
+            <ol class="poster-closeup-list">
+              <li>All passwords should be unique across accounts</li>
+              <li>Passwords should be 12 or more characters</li>
+              <li>Passwords should not be easily predicatable</li>
+            </ol>
+            <div class="poster-closeup-snippet">
+              The easiest way to generate and remember new passwords is to select three random words like "horseapplestaple"
+            </div>
+          </div>
+        </div>
+        <p class="mb-0">The strongest security is based off of Something you know (Passwords and pin codes), something you have (Multi factor authentication such as text one time codes and authenticator apps), and something you are (Fingerprint readers or facial scans)</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnDismissPoster" class="btn-game">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz & Completion Modal (Triggered when laptop alert is clicked) -->
+  <div id="quizModal" class="game-modal-overlay d-none" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle">
+    <div class="game-modal-card">
+      <div class="game-card-header">
+        <span id="quizModalTitle">LEVEL 01 // QUICK QUIZ</span>
+        <button type="button" id="btnCloseQuizX" class="btn-close-flat" aria-label="Close">[X]</button>
+      </div>
+      <div class="game-card-body">
+        <!-- Question Assessment View -->
+        <div id="quizQuestionView">
+          <p class="mb-3">Answer these three quick questions based on what you found around the desk to finish Level 1.</p>
+          
+          <div class="quiz-container">
+            <!-- Question 1 -->
+            <div class="quiz-question-block" id="qBlock1">
+              <div class="quiz-question-title">1. Why shouldn't you write your password on a sticky note at your desk?</div>
+              <div class="quiz-options-list">
+                <label class="quiz-option-label">
+                  <input type="radio" name="q1" value="A" class="quiz-option-input">
+                  <span>It slows down the computer's login system</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q1" value="B" class="quiz-option-input">
+                  <span>Anyone walking past can easily see your login details</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q1" value="C" class="quiz-option-input">
+                  <span>Sticky notes can easily lose their stickiness over time</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-question-block" id="qBlock2">
+              <div class="quiz-question-title">2. According to the password poster, what is a simple way to create a strong, memorable password?</div>
+              <div class="quiz-options-list">
+                <label class="quiz-option-label">
+                  <input type="radio" name="q2" value="A" class="quiz-option-input">
+                  <span>Choosing three random words like "horseapplestaple"</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q2" value="B" class="quiz-option-input">
+                  <span>Using your name and your date of birth</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q2" value="C" class="quiz-option-input">
+                  <span>Reusing your favourite password with one number added</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-question-block" id="qBlock3">
+              <div class="quiz-question-title">3. What was the main cause of the security incident mentioned in the newspaper?</div>
+              <div class="quiz-options-list">
+                <label class="quiz-option-label">
+                  <input type="radio" name="q3" value="A" class="quiz-option-input">
+                  <span>A broken power supply in the server room</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q3" value="B" class="quiz-option-input">
+                  <span>People being tricked into giving away their passwords (social engineering)</span>
+                </label>
+                <label class="quiz-option-label">
+                  <input type="radio" name="q3" value="C" class="quiz-option-input">
+                  <span>A weak Wi-Fi signal in the office building</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div id="quizFeedback" class="quiz-feedback d-none">
+            Some answers need another look. Review what you found and give it another try!
+          </div>
+        </div>
+
+        <!-- Completion "Well Done" View -->
+        <div id="quizSuccessView" class="completion-container d-none">
+          <div class="completion-trophy" aria-hidden="true">🏆</div>
+          <div class="completion-badge">WELL DONE // LEVEL 01 COMPLETED</div>
+          <h3 class="title-large">LEVEL 1 COMPLETE</h3>
+          <p class="mb-0">You've spotted the risks and mastered the essential password habits.</p>
+        </div>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btnSubmitQuiz" class="btn-game">Submit Answers</button>
+        <button type="button" id="btnContinueLevel2" class="btn-game d-none">Continue to Level 2</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Full-Screen Desk Stage -->
+  <main class="desk-viewer-wrapper" id="deskViewer">
+    <div class="desk-stage" id="deskStage">
+      <!-- Full-resolution desk photograph -->
+      <img src="media/desk.jpg" id="deskImg" class="desk-img" alt="Workstation Desk" draggable="false">
+
+      <!-- Wall Poster Item (Position locked, click to inspect) -->
+      <div id="posterItem" class="poster-desk" style="left: 5.88%; top: 40.08%;" role="button" tabindex="0" aria-label="Password policy poster on wall">
+        <div class="poster-desk-header">Password policy</div>
+        <div class="poster-desk-body">
+          <span class="poster-desk-line"></span>
+          <span class="poster-desk-line"></span>
+          <span class="poster-desk-line"></span>
+        </div>
+      </div>
+
+      <!-- Sticky Note with Handwritten Password -->
+      <div id="stickyNote" class="sticky-note" style="left: 43.32%; top: 62.45%;" role="button" tabindex="0" aria-label="Sticky note with password">
+        <span class="sticky-note-text">Password123!</span>
+      </div>
+
+      <!-- Newspaper Desk Item (Position locked, click to inspect) -->
+      <div id="newspaperItem" class="newspaper-desk" style="left: 77.07%; top: 78.22%;" role="button" tabindex="0" aria-label="Newspaper resting on desk">
+        <div class="newspaper-desk-masthead">DAILY NEWS</div>
+        <div class="newspaper-desk-headline">MAJOR UK BREACH</div>
+        <div class="newspaper-desk-body">
+          <div class="newspaper-img-box" aria-hidden="true"></div>
+          <div class="newspaper-lines-box" aria-hidden="true">
+            <span class="newspaper-line"></span>
+            <span class="newspaper-line"></span>
+            <span class="newspaper-line"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Red Laptop Alert with Exclamation (Position locked, revealed when all 3 resources inspected) -->
+      <div id="laptopAlert" class="laptop-alert d-none" style="left: 13.07%; top: 68.95%;" role="button" tabindex="0" aria-label="Laptop security alert">!</div>
+    </div>
+  </main>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core Game Engine -->
+  <script src="js/game.js"></script>
+
+  <!-- Level 1 Interactions & Assessment Controller -->
+  <script>
+    (function() {
+      // Modals and Triggers
+      const introModal = document.getElementById("introModal");
+      const btnIntroStart = document.getElementById("btnIntroStart");
+
+      const stickyNote = document.getElementById("stickyNote");
+      const stickyCloseupModal = document.getElementById("stickyCloseupModal");
+      const btnCloseStickyX = document.getElementById("btnCloseStickyX");
+      const btnDismissSticky = document.getElementById("btnDismissSticky");
+
+      const newspaperItem = document.getElementById("newspaperItem");
+      const newspaperModal = document.getElementById("newspaperModal");
+      const btnCloseNewspaperX = document.getElementById("btnCloseNewspaperX");
+      const btnDismissNewspaper = document.getElementById("btnDismissNewspaper");
+
+      const posterItem = document.getElementById("posterItem");
+      const posterModal = document.getElementById("posterModal");
+      const btnClosePosterX = document.getElementById("btnClosePosterX");
+      const btnDismissPoster = document.getElementById("btnDismissPoster");
+
+      // Laptop Alert & Quiz Elements
+      const laptopAlert = document.getElementById("laptopAlert");
+      const quizModal = document.getElementById("quizModal");
+      const btnCloseQuizX = document.getElementById("btnCloseQuizX");
+      const btnSubmitQuiz = document.getElementById("btnSubmitQuiz");
+      const btnContinueLevel2 = document.getElementById("btnContinueLevel2");
+      const quizQuestionView = document.getElementById("quizQuestionView");
+      const quizSuccessView = document.getElementById("quizSuccessView");
+      const quizFeedback = document.getElementById("quizFeedback");
+      const qBlock1 = document.getElementById("qBlock1");
+      const qBlock2 = document.getElementById("qBlock2");
+      const qBlock3 = document.getElementById("qBlock3");
+
+      // State tracking for the 3 workstation resources
+      const inspectedState = {
+        sticky: false,
+        newspaper: false,
+        poster: false
+      };
+      let alertTriggered = false;
+
+      // Web Audio API Ping Sound Generator
+      function playPingSound() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(880, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.08);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.35);
+
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(ctx.currentTime);
+          osc.stop(ctx.currentTime + 0.6);
+        } catch (e) {
+          console.warn("Audio playback not permitted or unavailable:", e);
+        }
+      }
+
+      function checkAllInspected() {
+        if (inspectedState.sticky && inspectedState.newspaper && inspectedState.poster && !alertTriggered) {
+          alertTriggered = true;
+          laptopAlert.classList.remove("d-none");
+          playPingSound();
+        }
+      }
+
+      // Dismiss Intro
+      btnIntroStart.addEventListener("click", () => {
+        introModal.classList.add("d-none");
+      });
+
+      // Sticky Note: Click opens modal & greys out note (0% saturation)
+      function inspectStickyNote() {
+        stickyNote.classList.add("inspected");
+        inspectedState.sticky = true;
+        stickyCloseupModal.classList.remove("d-none");
+        checkAllInspected();
+      }
+      stickyNote.addEventListener("click", inspectStickyNote);
+      stickyNote.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inspectStickyNote();
+        }
+      });
+
+      function closeStickyModal() {
+        stickyCloseupModal.classList.add("d-none");
+      }
+      btnCloseStickyX.addEventListener("click", closeStickyModal);
+      btnDismissSticky.addEventListener("click", closeStickyModal);
+
+      // Newspaper: Click opens modal & greys out newspaper (0% saturation)
+      function inspectNewspaper() {
+        newspaperItem.classList.add("inspected");
+        inspectedState.newspaper = true;
+        newspaperModal.classList.remove("d-none");
+        checkAllInspected();
+      }
+      newspaperItem.addEventListener("click", inspectNewspaper);
+      newspaperItem.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inspectNewspaper();
+        }
+      });
+
+      function closeNewspaperModal() {
+        newspaperModal.classList.add("d-none");
+      }
+      btnCloseNewspaperX.addEventListener("click", closeNewspaperModal);
+      btnDismissNewspaper.addEventListener("click", closeNewspaperModal);
+
+      // Poster: Click opens modal & greys out poster (0% saturation)
+      function inspectPoster() {
+        posterItem.classList.add("inspected");
+        inspectedState.poster = true;
+        posterModal.classList.remove("d-none");
+        checkAllInspected();
+      }
+      posterItem.addEventListener("click", inspectPoster);
+      posterItem.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          inspectPoster();
+        }
+      });
+
+      function closePosterModal() {
+        posterModal.classList.add("d-none");
+      }
+      btnClosePosterX.addEventListener("click", closePosterModal);
+      btnDismissPoster.addEventListener("click", closePosterModal);
+
+      // Laptop Alert: Click opens Quiz
+      function openQuiz() {
+        quizModal.classList.remove("d-none");
+      }
+      function closeQuiz() {
+        quizModal.classList.add("d-none");
+      }
+      laptopAlert.addEventListener("click", openQuiz);
+      laptopAlert.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openQuiz();
+        }
+      });
+      btnCloseQuizX.addEventListener("click", closeQuiz);
+
+      // Quiz Answer Verification (Unlimited retries)
+      btnSubmitQuiz.addEventListener("click", () => {
+        const q1Selected = document.querySelector('input[name="q1"]:checked');
+        const q2Selected = document.querySelector('input[name="q2"]:checked');
+        const q3Selected = document.querySelector('input[name="q3"]:checked');
+
+        const isQ1Correct = q1Selected && q1Selected.value === "B";
+        const isQ2Correct = q2Selected && q2Selected.value === "A";
+        const isQ3Correct = q3Selected && q3Selected.value === "B";
+
+        qBlock1.classList.toggle("error", !isQ1Correct);
+        qBlock2.classList.toggle("error", !isQ2Correct);
+        qBlock3.classList.toggle("error", !isQ3Correct);
+
+        if (isQ1Correct && isQ2Correct && isQ3Correct) {
+          // Success! Show well done badge & continue button
+          quizFeedback.classList.add("d-none");
+          quizQuestionView.classList.add("d-none");
+          quizSuccessView.classList.remove("d-none");
+          btnSubmitQuiz.classList.add("d-none");
+          btnContinueLevel2.classList.remove("d-none");
+        } else {
+          quizFeedback.classList.remove("d-none");
+        }
+      });
+
+      // Continue to Level 2
+      btnContinueLevel2.addEventListener("click", () => {
+        markLevelCompleted("level1");
+        window.location.href = "level2.html";
+      });
+
+    })();
+  </script>
+</body>
+</html>

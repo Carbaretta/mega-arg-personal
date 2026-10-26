@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Roke Graduate Challenge - Level 1</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- Base Stylesheet (Clean, professional, light palette) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="game-header">
+    <button class="burger-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#gameSidebar" aria-controls="gameSidebar" aria-label="Toggle navigation menu" id="burgerMenuBtn">
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+      <span class="burger-bar"></span>
+    </button>
+    <div class="header-brand">ROKE // GRADUATE PROGRAMME</div>
+    <div class="header-badge" id="header-player-name">GRADUATE</div>
+  </header>
+
+  <!-- Sidebar (Levels & Progress) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="gameSidebar" aria-labelledby="gameSidebarLabel" data-bs-backdrop="false">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="gameSidebarLabel">PROGRAMME LEVELS</h5>
+      <button type="button" class="btn-close-flat" data-bs-dismiss="offcanvas" aria-label="Close">[X]</button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Dynamically generated level list -->
+      <nav id="sidebar-levels" class="level-list" aria-label="Level navigation">
+        <!-- Injected via js/game.js -->
+      </nav>
+
+      <!-- Dynamically updated progress indicator -->
+      <div id="sidebar-progress" class="mt-4">
+        <!-- Injected via js/game.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="game-container">
+
+    <!-- Title Screen Panel -->
+    <section id="panel-title" class="game-card">
+      <div class="game-card-header">
+        <span>LEVEL 01 // TUTORIAL</span>
+        <span>ORIENTATION</span>
+      </div>
+      <div class="game-card-body">
+        <h1 class="title-large">WELCOME TO ROKE</h1>
+        <p class="meta-subheading">GRADUATE ENGINEERING CHALLENGE // ORIENTATION</p>
+        <p>Welcome to the Roke Graduate Challenge. This orientation will walk you through the system and guide you through your initial steps.</p>
+        <p>Please review your workstation and mobile display to get started.</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-start-tutorial" class="btn-game btn-game-block">START TUTORIAL</button>
+      </div>
+    </section>
+
+    <!-- Slide 1 -->
+    <section id="panel-slide-1" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 01 OF 07</span>
+        <span>WELCOME</span>
+      </div>
+      <div class="game-card-body">
+        <p>Welcome to Roke! Congratulations on starting your first day as a Graduate engineer. We're really glad to have someone on board with your level of expertise</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-1-next" class="btn-game">Next</button>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section id="panel-slide-2" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 02 OF 07</span>
+        <span>NOTICE</span>
+      </div>
+      <div class="game-card-body">
+        <p>We've had some issues with our security recently here, and we need you to help us out. Can you give us a hand?</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-2-next" class="btn-game">Absolutely</button>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section id="panel-slide-3" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 03 OF 07</span>
+        <span>PROFILE SETUP</span>
+      </div>
+      <div class="game-card-body">
+        <p class="mb-3">Great! Firstly, what's your name?</p>
+        <form id="form-name-input" onsubmit="return false;">
+          <label for="input-user-name" class="visually-hidden">Your Name</label>
+          <input type="text" id="input-user-name" class="input-game" placeholder="Enter your name" maxlength="40" autocomplete="off" required>
+          <div id="name-error-msg" class="meta-subheading text-danger mt-2 d-none">Please enter your name to proceed.</div>
+        </form>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-3-submit" class="btn-game">Submit</button>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section id="panel-slide-4" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 04 OF 07</span>
+        <span>INTRODUCTION</span>
+      </div>
+      <div class="game-card-body">
+        <p>Great to meet you <strong id="slide-4-name-placeholder"></strong>. We're going to go through a series of steps together to help you learn about good cybersecurity, and hopefully get Roke back online.</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-4-next" class="btn-game">Next</button>
+      </div>
+    </section>
+
+    <!-- Slide 5 Overlay Card (Active during Sidebar Walkthrough) -->
+    <section id="panel-slide-5" class="tutorial-overlay-card d-none">
+      <div class="game-card-header">
+        <span id="slide-5-step-label">INTERFACE GUIDE // STEP 05 OF 07</span>
+        <span id="slide-5-focus-label">NAVIGATION</span>
+      </div>
+      <div class="game-card-body">
+        <p id="slide-5-instruction-text">This is where you willl find each of the levels. You can access them by simply clicking on them. Down here you'll find your progress to indicate how close we are to fully securing our business.</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-5-next" class="btn-game">Next</button>
+      </div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section id="panel-slide-6" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 06 OF 07</span>
+        <span>WORKSTATION BRIEFING</span>
+      </div>
+      <div class="game-card-body">
+        <p>There'll be a combination of things for you to do on here as well as around you. Take a look at the table in front of you; you'll find some of the tools and extra challenges needed to progress through the levels.</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-6-next" class="btn-game">Next</button>
+      </div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section id="panel-slide-7" class="game-card d-none">
+      <div class="game-card-header">
+        <span>ORIENTATION // STEP 07 OF 07</span>
+        <span>GETTING STARTED</span>
+      </div>
+      <div class="game-card-body">
+        <p>Ready to get started?</p>
+      </div>
+      <div class="game-card-footer">
+        <button type="button" id="btn-slide-7-next" class="btn-game">lets go</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core Game Engine (Levels, Cookies, Sidebar) -->
+  <script src="js/game.js"></script>
+
+  <!-- Level 1 Tutorial Controller -->
+  <script>
+    (function() {
+      // Panel Elements
+      const panelTitle = document.getElementById("panel-title");
+      const panelSlide1 = document.getElementById("panel-slide-1");
+      const panelSlide2 = document.getElementById("panel-slide-2");
+      const panelSlide3 = document.getElementById("panel-slide-3");
+      const panelSlide4 = document.getElementById("panel-slide-4");
+      const panelSlide5 = document.getElementById("panel-slide-5");
+      const panelSlide6 = document.getElementById("panel-slide-6");
+      const panelSlide7 = document.getElementById("panel-slide-7");
+
+      // Slide 5 internal sub-step flag
+      // 0 = Initial (highlight links), 1 = Next clicked (highlight progress)
+      let slide5SubStep = 0;
+
+      // Offcanvas instance helper
+      const sidebarEl = document.getElementById("gameSidebar");
+      let offcanvasInstance = null;
+      function getSidebar() {
+        if (!offcanvasInstance) {
+          offcanvasInstance = bootstrap.Offcanvas.getOrCreateInstance(sidebarEl, { backdrop: false });
+        }
+        return offcanvasInstance;
+      }
+
+      function hideAllPanels() {
+        panelTitle.classList.add("d-none");
+        panelSlide1.classList.add("d-none");
+        panelSlide2.classList.add("d-none");
+        panelSlide3.classList.add("d-none");
+        panelSlide4.classList.add("d-none");
+        panelSlide5.classList.add("d-none");
+        panelSlide6.classList.add("d-none");
+        panelSlide7.classList.add("d-none");
+      }
+
+      // Title -> Slide 1
+      document.getElementById("btn-start-tutorial").addEventListener("click", () => {
+        hideAllPanels();
+        panelSlide1.classList.remove("d-none");
+      });
+
+      // Slide 1 -> Slide 2
+      document.getElementById("btn-slide-1-next").addEventListener("click", () => {
+        hideAllPanels();
+        panelSlide2.classList.remove("d-none");
+      });
+
+      // Slide 2 -> Slide 3
+      document.getElementById("btn-slide-2-next").addEventListener("click", () => {
+        hideAllPanels();
+        panelSlide3.classList.remove("d-none");
+        const existingName = getPlayerName();
+        if (existingName) {
+          document.getElementById("input-user-name").value = existingName;
+        }
+        document.getElementById("input-user-name").focus();
+      });
+
+      // Slide 3 -> Slide 4 (Submit Name & Save to Cookies)
+      function submitName() {
+        const input = document.getElementById("input-user-name");
+        const errorMsg = document.getElementById("name-error-msg");
+        const enteredName = input.value.trim();
+
+        if (!enteredName) {
+          errorMsg.classList.remove("d-none");
+          input.focus();
+          return;
+        }
+
+        errorMsg.classList.add("d-none");
+        setPlayerName(enteredName);
+        updateHeaderPlayerStatus();
+
+        // Update placeholder in Slide 4
+        document.getElementById("slide-4-name-placeholder").textContent = enteredName;
+
+        hideAllPanels();
+        panelSlide4.classList.remove("d-none");
+      }
+
+      document.getElementById("btn-slide-3-submit").addEventListener("click", submitName);
+      document.getElementById("input-user-name").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submitName();
+        }
+      });
+
+      // Slide 4 -> Slide 5 (Open sidebar, highlight hyperlinks)
+      document.getElementById("btn-slide-4-next").addEventListener("click", () => {
+        hideAllPanels();
+        slide5SubStep = 0;
+        panelSlide5.classList.remove("overlay-top");
+
+        // Open Sidebar
+        getSidebar().show();
+
+        // Highlight Sidebar Hyperlinks
+        const levelsContainer = document.getElementById("sidebar-levels");
+        const progressContainer = document.getElementById("sidebar-progress");
+        if (levelsContainer) levelsContainer.classList.add("tutorial-highlight");
+        if (progressContainer) progressContainer.classList.remove("tutorial-highlight");
+
+        document.getElementById("slide-5-focus-label").textContent = "LEVEL HYPERLINKS";
+        document.getElementById("slide-5-instruction-text").textContent = "This is where you willl find each of the levels. You can access them by simply clicking on them.";
+
+        // Show Slide 5 Overlay
+        panelSlide5.classList.remove("d-none");
+      });
+
+      // Slide 5 -> Sub-step (Highlight progress & move box to top) -> Slide 6
+      document.getElementById("btn-slide-5-next").addEventListener("click", () => {
+        const levelsContainer = document.getElementById("sidebar-levels");
+        const progressContainer = document.getElementById("sidebar-progress");
+
+        if (slide5SubStep === 0) {
+          // Transition to highlighting progress indicator: move card to top so progress indicator is visible
+          slide5SubStep = 1;
+          panelSlide5.classList.add("overlay-top");
+          if (levelsContainer) levelsContainer.classList.remove("tutorial-highlight");
+          if (progressContainer) progressContainer.classList.add("tutorial-highlight");
+
+          document.getElementById("slide-5-focus-label").textContent = "PROGRESS TRACKER";
+          document.getElementById("slide-5-instruction-text").textContent = "Down here you'll find your progress to indicate how close we are to fully securing our business.";
+        } else {
+          // Transition to Slide 6: Clear highlights, reset card position, close sidebar, show Slide 6
+          panelSlide5.classList.remove("overlay-top");
+          if (progressContainer) progressContainer.classList.remove("tutorial-highlight");
+          if (levelsContainer) levelsContainer.classList.remove("tutorial-highlight");
+
+          getSidebar().hide();
+          hideAllPanels();
+          panelSlide6.classList.remove("d-none");
+        }
+      });
+
+      // Slide 6 -> Slide 7
+      document.getElementById("btn-slide-6-next").addEventListener("click", () => {
+        hideAllPanels();
+        panelSlide7.classList.remove("d-none");
+      });
+
+      // Slide 7 -> Navigate to Level 1 (and mark tutorial complete in cookie)
+      document.getElementById("btn-slide-7-next").addEventListener("click", () => {
+        markLevelCompleted("tutorial");
+        window.location.href = "level1.html";
+      });
+
+    })();
+  </script>
+</body>
+</html>
